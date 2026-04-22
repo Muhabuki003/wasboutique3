@@ -1419,22 +1419,47 @@ async function handleCheckout() {
     alert('Connect your Cloudflare Worker to enable Square Checkout.');
     return;
   }
-  // CF Worker handles Square checkout session creation
-  const res = await fetch(CONFIG.cfWorkerUrl + '/checkout', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      lineItems: cart.map(i => ({
-        id:        i.id,
-        name:      i.name,
-        price:     i.price,
-        quantity:  i.qty,
-        variantId: i.selectedVariantId || ''
-      }))
-    })
-  });
-  const data = await res.json();
-  if (data.checkoutUrl) window.location.href = data.checkoutUrl;
+
+  if (cart.length === 0) {
+    alert('Your bag is empty.');
+    return;
+  }
+
+  const btn = document.querySelector('.checkout-btn');
+  const original = btn.textContent;
+  btn.textContent = 'Loading...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(CONFIG.cfWorkerUrl + '/checkout', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        lineItems: cart.map(i => ({
+          id:        i.id,
+          name:      i.name,
+          price:     i.price || 1,
+          quantity:  i.qty,
+          variantId: i.selectedVariantId || ''
+        }))
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.checkoutUrl) {
+      window.location.href = data.checkoutUrl;
+    } else {
+      const msg = data.error || data.errors?.[0]?.detail || 'Checkout failed. Check worker logs.';
+      alert('Error: ' + msg);
+      btn.textContent = original;
+      btn.disabled = false;
+    }
+  } catch(e) {
+    alert('Network error reaching worker: ' + e.message);
+    btn.textContent = original;
+    btn.disabled = false;
+  }
 }
 
 /* ══════════════════════════════════════════════════════
