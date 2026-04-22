@@ -1274,71 +1274,14 @@ const CONFIG = {
 /* ══════════════════════════════════════════════════════
    CATALOG  (mock Square data; replace via CF Worker)
 ══════════════════════════════════════════════════════ */
-const PRODUCTS = [
-  {
-    id:'p1', name:'Gold Cascade Necklace', category:'Necklaces',
-    price:89, g:'g1', isNew:false, isBest:true,
-    desc:'A flowing 18K gold-plated chain that drapes gracefully at the collarbone. Lightweight and lustrous, made to be layered or worn alone. Adjustable 16″–18″.',
-    variants:['16″','18″','20″'],
-    imgs:['g1','g2','g3']
-  },
-  {
-    id:'p2', name:'Pearl Stud Earrings', category:'Earrings',
-    price:65, g:'g2', isNew:true, isBest:false,
-    desc:'Freshwater pearl studs set in sterling silver. Timeless and refined — the earrings you reach for every morning.',
-    variants:['Small (6mm)','Large (9mm)'],
-    imgs:['g2','g5','g6']
-  },
-  {
-    id:'p3', name:'Stackable Ring Set', category:'Rings',
-    price:75, g:'g3', isNew:false, isBest:true,
-    desc:'A curated trio: one hammered gold band, one polished plain band, one twisted. Mix and match. Made to stack.',
-    variants:['5','6','7','8','9'],
-    imgs:['g3','g7','g1']
-  },
-  {
-    id:'p4', name:'Diamond Lariat Pendant', category:'Necklaces',
-    price:145, g:'g4', isNew:true, isBest:false,
-    desc:'A delicate lariat with a brilliant cubic zirconia drop. Fully adjustable and designed for everyday luxury.',
-    variants:['One Size'],
-    imgs:['g4','g8','g2']
-  },
-  {
-    id:'p5', name:'Mini Hoop Earrings', category:'Earrings',
-    price:55, g:'g5', isNew:false, isBest:true,
-    desc:'Huggie-style 18K gold hoops. 14mm diameter, comfortable enough to sleep in. The ones you never take off.',
-    variants:['14mm','18mm','22mm'],
-    imgs:['g5','g1','g4']
-  },
-  {
-    id:'p6', name:'Chunky Chain Bracelet', category:'Bracelets',
-    price:95, g:'g6', isNew:true, isBest:false,
-    desc:'Oversized links in 18K gold plating. Bold enough to stand alone, versatile enough to stack. Adjustable 7″–8.5″.',
-    variants:['One Size'],
-    imgs:['g6','g3','g8']
-  },
-  {
-    id:'p7', name:'Minimalist Band Ring', category:'Rings',
-    price:45, g:'g7', isNew:false, isBest:false,
-    desc:'A slim polished band that pairs with everything you own. The ring you stack, the ring you keep.',
-    variants:['5','6','7','8','9'],
-    imgs:['g7','g2','g5']
-  },
-  {
-    id:'p8', name:'Tennis Bracelet', category:'Bracelets',
-    price:185, g:'g8', isNew:false, isBest:true,
-    desc:'A continuous line of brilliant cubic zirconia stones set in gold-plated sterling silver. Effortless elegance, every day.',
-    variants:['6.5″','7″','7.5″'],
-    imgs:['g8','g4','g6']
-  }
-];
+const PRODUCTS = [];
 
-const CATEGORIES = [
+const CATEGORIES = CONFIG.useMockData ? [
   {name:'Rings',count:2,g:'g3'},
   {name:'Necklaces',count:2,g:'g1'},
   {name:'Earrings',count:2,g:'g5'},
   {name:'Bracelets',count:2,g:'g6'}
-];
+] : [];
 
 const FAQ = [
   {q:'How long does shipping take?',a:'Standard shipping is 5–7 business days. Express (2–3 days) and overnight options are available at checkout. Free standard shipping on all orders over $75.'},
@@ -1833,15 +1776,37 @@ document.addEventListener('keydown', e => {
    INIT
 ══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  renderFeatured();
-  renderMarquee();
-  renderCategories();
-  renderStrip();
-  renderShop();
-  renderLookbook();
+  if (!CONFIG.useMockData) {
+    // Show loading state in grids while Square loads
+    const loadingHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px 0;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">Loading catalog...</div>`;
+    const ids = ['feat-grid','shop-grid','cat-grid'];
+    ids.forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = loadingHTML; });
+  }
   renderFAQ();
+  renderMarquee();
+  renderStrip();
   initAnimations();
-  fetchSquareCatalog();
+  // Fetch Square catalog — re-renders everything on success
+  fetchSquareCatalog().then(() => {
+    if (PRODUCTS.length) {
+      renderFeatured();
+      renderCategories();
+      renderShop();
+      renderLookbook();
+    } else if (!CONFIG.useMockData) {
+      const ids = ['feat-grid','shop-grid'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px 0;font-size:13px;color:var(--muted)">No products found. Add prices to your items in Square dashboard.</div>`;
+      });
+    }
+  });
+  if (CONFIG.useMockData) {
+    renderFeatured();
+    renderCategories();
+    renderShop();
+    renderLookbook();
+  }
 });
 </script>
 </body>
