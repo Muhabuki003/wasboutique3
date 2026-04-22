@@ -16,19 +16,26 @@
    DESIGN TOKENS  ·  taste-skill: DENSITY=3 MOTION=7 VARIANCE=7
 ══════════════════════════════════════════════════════ */
 :root {
-  --bg:           #0A0806;
-  --surface:      #131009;
-  --card:         #1A1610;
-  --card-h:       #211E17;
-  --ivory:        #F0EAD8;
-  --ivory-dim:    #A8987E;
-  --muted:        #5A5046;
-  --gold:         #C9A96E;
-  --gold-hi:      #DFC08A;
-  --gold-lo:      rgba(201,169,110,.12);
-  --gold-mid:     rgba(201,169,110,.28);
-  --border:       rgba(201,169,110,.09);
-  --border-hi:    rgba(201,169,110,.28);
+  /* ── Velvet & Gilded ── */
+  --bg:           #080808;
+  --surface:      #100F0F;
+  --card:         #181616;
+  --card-h:       #201D1D;
+  --ivory:        #F2EBE1;
+  --ivory-dim:    #A89890;
+  --muted:        #5C5250;
+
+  --gold:         #D4AF37;
+  --gold-hi:      #E8C84A;
+  --gold-lo:      rgba(212,175,55,.12);
+  --gold-mid:     rgba(212,175,55,.28);
+  --border:       rgba(212,175,55,.1);
+  --border-hi:    rgba(212,175,55,.3);
+
+  --pink:         #E91E63;
+  --pink-hi:      #FF4081;
+  --pink-lo:      rgba(233,30,99,.12);
+
   --font-d:       'Cormorant Garamond', serif;
   --font-b:       'DM Sans', sans-serif;
   --nav-h:        72px;
@@ -99,7 +106,7 @@ img{display:block;width:100%}
 .nav-cart:hover{color:var(--gold)}
 .cart-badge{
   min-width:18px;height:18px;padding:0 4px;
-  background:var(--gold);color:var(--bg);
+  background:var(--pink);color:var(--ivory);
   border-radius:9px;
   font-size:10px;font-weight:500;
   display:flex;align-items:center;justify-content:center;
@@ -190,13 +197,13 @@ img{display:block;width:100%}
 .h-cta{
   display:inline-flex;align-items:center;gap:18px;
   padding:17px 44px;
-  border:1px solid var(--gold);
+  border:1px solid var(--pink);
   font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--gold);
+  color:var(--pink);
   transition:all .35s var(--ease);
   opacity:0;transform:translateY(18px);cursor:pointer;
 }
-.h-cta:hover{background:var(--gold);color:var(--bg)}
+.h-cta:hover{background:var(--pink);color:var(--ivory)}
 .h-cta .arr{
   display:inline-block;
   transition:transform .3s var(--ease);
@@ -288,7 +295,7 @@ img{display:block;width:100%}
 .p-quick{
   position:absolute;bottom:20px;left:20px;right:20px;
   z-index:3;padding:13px;
-  background:var(--gold);color:var(--bg);
+  background:var(--pink);color:var(--ivory);
   text-align:center;font-size:11px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase;
   opacity:0;transform:translateY(10px);
@@ -549,12 +556,12 @@ img{display:block;width:100%}
 .var-chip:hover,.var-chip.act{border-color:var(--gold);color:var(--gold)}
 .atb-btn{
   width:100%;padding:19px;
-  background:var(--gold);color:var(--bg);
+  background:var(--pink);color:var(--ivory);
   font-family:var(--font-b);font-size:12px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;
   cursor:pointer;border:none;transition:background .2s;
 }
-.atb-btn:hover{background:var(--gold-hi)}
+.atb-btn:hover{background:var(--pink-hi)}
 .pd-recs{
   border-top:1px solid var(--border);
   padding-top:26px;
@@ -746,13 +753,13 @@ img{display:block;width:100%}
 .form-ta{height:148px;resize:none}
 .form-sub{
   padding:17px 44px;
-  background:var(--gold);color:var(--bg);
+  background:var(--pink);color:var(--ivory);
   font-family:var(--font-b);font-size:11px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;
   cursor:pointer;border:none;align-self:flex-start;
   transition:background .2s;
 }
-.form-sub:hover{background:var(--gold-hi)}
+.form-sub:hover{background:var(--pink-hi)}
 .socials{display:flex;flex-direction:column;gap:12px;margin-top:44px}
 .soc-link{
   display:flex;align-items:center;gap:18px;
@@ -875,12 +882,12 @@ img{display:block;width:100%}
 }
 .checkout-btn{
   width:100%;padding:19px;
-  background:var(--gold);color:var(--bg);
+  background:var(--pink);color:var(--ivory);
   font-family:var(--font-b);font-size:12px;font-weight:500;
   letter-spacing:.22em;text-transform:uppercase;
   cursor:pointer;border:none;transition:background .2s;
 }
-.checkout-btn:hover{background:var(--gold-hi)}
+.checkout-btn:hover{background:var(--pink-hi)}
 
 /* ══════════════════════════════════════════════════════
    FOOTER
@@ -935,6 +942,51 @@ img{display:block;width:100%}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border-hi)}
+
+/* ══════════════════════════════════════════════════════
+   VIDEO SECTION
+══════════════════════════════════════════════════════ */
+.vid-section{
+  position:relative;height:80vh;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.vid-bg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  opacity:.55;
+}
+.vid-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(8,8,8,.3) 0%,rgba(8,8,8,.55) 100%);
+}
+.vid-content{
+  position:relative;z-index:2;
+  text-align:center;padding:0 24px;
+}
+.vid-eyebrow{
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;
+}
+.vid-title{
+  font-family:var(--font-d);
+  font-size:clamp(52px,8vw,110px);
+  font-weight:300;line-height:.9;
+  letter-spacing:-.02em;
+  margin-bottom:40px;
+}
+.vid-title em{font-style:italic;color:var(--pink)}
+.vid-cta{
+  display:inline-flex;align-items:center;gap:14px;
+  padding:15px 40px;
+  border:1px solid var(--pink);
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--pink);
+  background:transparent;
+  cursor:pointer;transition:all .3s var(--ease);
+}
+.vid-cta:hover{background:var(--pink);color:var(--ivory)}
 </style>
 </head>
 <body>
@@ -943,7 +995,7 @@ img{display:block;width:100%}
      NAV
 ══════════════════════════════════════════════════ -->
 <nav class="nav" id="nav">
-  <div class="nav-logo" onclick="go('home')">WAS <em>Boutique</em></div>
+  <div class="nav-logo" onclick="go('home')" style="cursor:pointer"><img src="https://raw.githubusercontent.com/Muhabuki003/wasboutiquestore/main/logo.png" alt="WAS Boutique" style="height:44px;width:auto;object-fit:contain;display:block" onerror="this.style.display='none';this.nextSibling.style.display='block'"><span style="display:none;font-family:var(--font-d);font-size:20px;font-weight:400;letter-spacing:.16em;text-transform:uppercase">WAS <em style='font-style:normal;color:var(--gold)'>Boutique</em></span></div>
   <ul class="nav-links">
     <li><a id="nl-shop"     onclick="go('shop')">Shop</a></li>
     <li><a id="nl-lookbook" onclick="go('lookbook')">Lookbook</a></li>
@@ -981,6 +1033,20 @@ img{display:block;width:100%}
     <div class="hero-scroll" id="h-scroll">
       <span>Scroll</span>
       <div class="scroll-line"></div>
+    </div>
+  </section>
+
+
+  <!-- Video Section -->
+  <section class="vid-section">
+    <video class="vid-bg" autoplay muted loop playsinline>
+      <source src="https://raw.githubusercontent.com/Muhabuki003/wasboutiquestore/main/video_1.mp4" type="video/mp4">
+    </video>
+    <div class="vid-overlay"></div>
+    <div class="vid-content">
+      <p class="vid-eyebrow">Crafted for You</p>
+      <h2 class="vid-title">Every Ring<br><em>Tells a Story</em></h2>
+      <button class="vid-cta" onclick="goShopFilter('Rings')">Shop Rings <span>→</span></button>
     </div>
   </section>
 
@@ -1178,20 +1244,25 @@ img{display:block;width:100%}
     <h1 class="contact-title">Get in <em>Touch</em></h1>
     <div class="contact-cols">
       <div>
-        <div class="c-form">
+        <div class="c-form" id="contact-form">
           <div class="form-g">
             <label class="form-lbl">Your Name</label>
-            <input class="form-in" type="text" placeholder="Name">
+            <input class="form-in" id="cf-name" type="text" placeholder="Name" required>
           </div>
           <div class="form-g">
             <label class="form-lbl">Email Address</label>
-            <input class="form-in" type="email" placeholder="email@example.com">
+            <input class="form-in" id="cf-email" type="email" placeholder="email@example.com" required>
+          </div>
+          <div class="form-g">
+            <label class="form-lbl">Subject</label>
+            <input class="form-in" id="cf-subject" type="text" placeholder="Order inquiry, product question...">
           </div>
           <div class="form-g">
             <label class="form-lbl">Message</label>
-            <textarea class="form-ta" placeholder="How can we help?"></textarea>
+            <textarea class="form-ta" id="cf-msg" placeholder="How can we help?" required></textarea>
           </div>
-          <button class="form-sub">Send Message</button>
+          <div id="cf-status" style="font-size:13px;display:none;padding:12px 16px;border:1px solid var(--border)"></div>
+          <button class="form-sub" onclick="submitContactForm()">Send Message</button>
         </div>
         <div class="socials">
           <div class="soc-link">
@@ -1443,7 +1514,7 @@ function jewelSVG(size=60, opacity=.14) {
    RENDER: PRODUCT CARD
 ══════════════════════════════════════════════════════ */
 function pCardHTML(p) {
-  const badge = p.isNew ? `<div style="position:absolute;top:14px;left:14px;z-index:2;background:var(--gold);color:var(--bg);font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:5px 10px">New</div>` : '';
+  const badge = p.isNew ? `<div style="position:absolute;top:14px;left:14px;z-index:2;background:var(--pink);color:var(--ivory);font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:5px 10px">New</div>` : '';
   const imgContent = p.imageUrls?.length
     ? `<img src="${p.imageUrls[0]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
     : jewelSVG();
@@ -1528,22 +1599,34 @@ function applySort() {
    RENDER: LOOKBOOK MASONRY
 ══════════════════════════════════════════════════════ */
 function renderLookbook() {
-  const items = [
-    {g:'g1',r:'3/4',  tag:'Gold Cascade Necklace — $89'},
-    {g:'g2',r:'1/1',  tag:'Pearl Stud Earrings — $65'},
-    {g:'g3',r:'5/6',  tag:'Stackable Ring Set — $75'},
-    {g:'g4',r:'2/3',  tag:'Diamond Lariat Pendant — $145'},
-    {g:'g5',r:'1/1',  tag:'Mini Hoop Earrings — $55'},
-    {g:'g6',r:'4/5',  tag:'Chunky Chain Bracelet — $95'},
-    {g:'g7',r:'5/6',  tag:'Minimalist Band Ring — $45'},
-    {g:'g8',r:'1/1',  tag:'Tennis Bracelet — $185'},
-    {g:'g1',r:'2/3',  tag:'Gold Cascade Necklace — $89'}
-  ];
-  document.getElementById('lb-masonry').innerHTML = items.map(i => `
-    <div class="m-item">
-      <div class="m-img ${i.g}" style="aspect-ratio:${i.r}">${jewelSVG(50,.1)}</div>
-      <div class="m-tag">${i.tag}</div>
-    </div>`).join('');
+  const masonry = document.getElementById('lb-masonry');
+  const ratios = ['3/4','1/1','5/6','2/3','4/5','1/1','3/4','5/6','2/3'];
+  const grads  = ['g1','g2','g3','g4','g5','g6','g7','g8','g1'];
+
+  // Use real Square products if available, else show placeholders
+  const items = PRODUCTS.length
+    ? PRODUCTS.map((p, i) => ({
+        name:     p.name,
+        price:    p.price > 0 ? '$' + p.price : '',
+        imgUrl:   p.imageUrls?.[0] || null,
+        g:        p.g || grads[i % grads.length],
+        ratio:    ratios[i % ratios.length],
+        id:       p.id
+      }))
+    : ratios.map((r, i) => ({ name: '', price: '', imgUrl: null, g: grads[i], ratio: r, id: null }));
+
+  masonry.innerHTML = items.map(item => {
+    const img = item.imgUrl
+      ? `<img src="${item.imgUrl}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .55s var(--ease)">`
+      : `<div class="${item.g}" style="width:100%;height:100%">${jewelSVG(50,.1)}</div>`;
+    const tag = item.name ? `<div class="m-tag">${item.name}${item.price ? ' — ' + item.price : ''}</div>` : '';
+    const click = item.id ? `openPD('${item.id}')` : `go('shop')`;
+    return `
+    <div class="m-item" onclick="${click}">
+      <div style="aspect-ratio:${item.ratio};overflow:hidden;position:relative">${img}</div>
+      ${tag}
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1647,6 +1730,71 @@ function selectVariant(el, v) {
   document.querySelectorAll('.var-chip').forEach(c => c.classList.remove('act'));
   el.classList.add('act');
   activeVariant = v;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   CONTACT FORM  ·  Formspree
+   Replace FORMSPREE_ID below with your form ID from formspree.io
+══════════════════════════════════════════════════════ */
+const FORMSPREE_ID = 'YOUR_FORMSPREE_ID'; // e.g. 'xpwzgkqb'
+
+async function submitContactForm() {
+  const name    = document.getElementById('cf-name').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const subject = document.getElementById('cf-subject').value.trim();
+  const msg     = document.getElementById('cf-msg').value.trim();
+  const status  = document.getElementById('cf-status');
+  const btn     = document.querySelector('.form-sub');
+
+  if (!name || !email || !msg) {
+    showFormStatus('Please fill in all required fields.', 'error');
+    return;
+  }
+
+  if (FORMSPREE_ID === 'YOUR_FORMSPREE_ID') {
+    showFormStatus('Form not yet connected. Add your Formspree ID to the site.', 'error');
+    return;
+  }
+
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name, email, subject, message: msg,
+        _replyto: email,
+        _subject: `WAS Boutique Inquiry — ${subject || name}`
+      })
+    });
+
+    if (res.ok) {
+      showFormStatus('Message sent! We'll get back to you within 24 hours.', 'success');
+      document.getElementById('cf-name').value = '';
+      document.getElementById('cf-email').value = '';
+      document.getElementById('cf-subject').value = '';
+      document.getElementById('cf-msg').value = '';
+    } else {
+      const data = await res.json();
+      showFormStatus(data?.errors?.[0]?.message || 'Something went wrong. Try emailing us directly.', 'error');
+    }
+  } catch(e) {
+    showFormStatus('Network error. Please email wasboutique@yahoo.com directly.', 'error');
+  }
+
+  btn.textContent = 'Send Message';
+  btn.disabled = false;
+}
+
+function showFormStatus(msg, type) {
+  const el = document.getElementById('cf-status');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.color = type === 'success' ? 'var(--gold)' : 'var(--pink)';
+  el.style.borderColor = type === 'success' ? 'var(--border)' : 'var(--pink-lo)';
 }
 
 /* ══════════════════════════════════════════════════════
