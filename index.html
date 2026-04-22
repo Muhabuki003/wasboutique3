@@ -1804,69 +1804,91 @@ const GRAD_CLASSES = ['g1','g2','g3','g4','g5','g6','g7','g8'];
 
 async function fetchSquareCatalog() {
   if (CONFIG.useMockData || !CONFIG.cfWorkerUrl) return;
+
+  const CACHE_KEY = 'was_catalog_v2';
+  const CACHE_TTL = 5 * 60 * 1000; // 5 min
+
+  // ── Step 1: load from localStorage immediately (instant render) ──
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const { products, ts } = JSON.parse(cached);
+      if (products?.length) {
+        applySquareCatalog(products);
+        // If cache is fresh enough, skip the network fetch
+        if (Date.now() - ts < CACHE_TTL) return;
+      }
+    }
+  } catch(e) {}
+
+  // ── Step 2: fetch fresh catalog from worker ──
   try {
     const res  = await fetch(CONFIG.cfWorkerUrl + '/catalog');
     const data = await res.json();
     if (!data.products?.length) return;
 
-    // Filter out $0 items and build real product list
-    const real = data.products
-      .filter(p => p.price > 0 || p.imageUrls?.length)
-      .map((p, i) => ({
-        id:          p.id,
-        name:        p.name,
-        description: p.description || '',
-        category:    p.category !== 'Other' ? p.category : inferCategory(p.name),
-        price:       p.price,
-        imageUrls:   p.imageUrls || [],
-        g:           GRAD_CLASSES[i % GRAD_CLASSES.length],
-        isNew:       false,
-        isBest:      false,
-        variants:    p.variants?.length
-          ? p.variants.map(v => ({ id: v.id, name: v.name, price: v.price }))
-          : [{ id: p.id + '_v', name: 'One Size', price: p.price }],
-        squareVariations: p.variants || []
-      }));
+    // Store in localStorage for next refresh
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      products: data.products,
+      ts: Date.now()
+    }));
 
-    if (!real.length) {
-      console.warn('[Square] No priced items found — using mock data. Add prices in Square dashboard.');
-      return;
-    }
-
-    // Replace mock PRODUCTS with real ones
-    PRODUCTS.length = 0;
-    real.forEach(p => PRODUCTS.push(p));
-
-    // Rebuild real categories from what's actually in the catalog
-    const catNames = [...new Set(PRODUCTS.map(p => p.category))].filter(Boolean);
-    CATEGORIES.length = 0;
-    catNames.forEach((name, i) => {
-      CATEGORIES.push({
-        name,
-        count: PRODUCTS.filter(p => p.category === name).length,
-        g: GRAD_CLASSES[i % GRAD_CLASSES.length]
-      });
-    });
-
-    // Update filter bar to match real categories
-    const filterBar = document.getElementById('filter-bar');
-    if (filterBar) {
-      filterBar.innerHTML = `<button class="f-btn active" data-f="all" onclick="applyFilter(this,'all')">All</button>` +
-        catNames.map(c => `<button class="f-btn" data-f="${c}" onclick="applyFilter(this,'${c}')">${c}</button>`).join('');
-    }
-
-    // Re-render everything with real data
-    renderFeatured();
-    renderCategories();
-    renderStrip();
-    renderShop();
-    renderLookbook();
-    console.log(`[Square] Loaded ${PRODUCTS.length} products, ${CATEGORIES.length} categories`);
+    applySquareCatalog(data.products);
 
   } catch(e) {
-    console.warn('[Square] Fetch failed, using mock data:', e);
+    console.warn('[Square] Fetch failed, using cached/mock data:', e);
   }
 }
+
+// ── Apply a raw products array from Square to the site ──
+function applySquareCatalog(rawProducts) {
+  const mapped = rawProducts.map((p, i) => ({
+    id:          p.id,
+    name:        p.name,
+    description: p.description || '',
+    category:    p.category !== 'Other' ? p.category : inferCategory(p.name),
+    price:       p.price || 0,
+    imageUrls:   p.imageUrls || [],
+    g:           GRAD_CLASSES[i % GRAD_CLASSES.length],
+    isNew:       false,
+    isBest:      false,
+    variants:    p.variants?.length
+      ? p.variants.map(v => ({ id: v.id, name: v.name, price: v.price }))
+      : [{ id: p.id + '_v', name: 'One Size', price: p.price || 0 }],
+    squareVariations: p.variants || []
+  }));
+
+  if (!mapped.length) return;
+
+  PRODUCTS.length = 0;
+  mapped.forEach(p => PRODUCTS.push(p));
+
+  const catNames = [...new Set(PRODUCTS.map(p => p.category))].filter(Boolean);
+  CATEGORIES.length = 0;
+  catNames.forEach((name, i) => {
+    CATEGORIES.push({
+      name,
+      count: PRODUCTS.filter(p => p.category === name).length,
+      g: GRAD_CLASSES[i % GRAD_CLASSES.length]
+    });
+  });
+
+  // Update filter bar
+  const filterBar = document.getElementById('filter-bar');
+  if (filterBar) {
+    filterBar.innerHTML =
+      `<button class="f-btn active" data-f="all" onclick="applyFilter(this,'all')">All</button>` +
+      catNames.map(c => `<button class="f-btn" data-f="${c}" onclick="applyFilter(this,'${c}')">${c}</button>`).join('');
+  }
+
+  renderFeatured();
+  renderCategories();
+  renderStrip();
+  renderShop();
+  renderLookbook();
+  console.log(`[Square] ${PRODUCTS.length} products, ${CATEGORIES.length} categories`);
+}
+
 
 // Guess category from item name if Square doesn't have one assigned
 function inferCategory(name) {
@@ -1924,36 +1946,21 @@ document.addEventListener('keydown', e => {
    INIT
 ══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  if (!CONFIG.useMockData) {
-    // Show loading state in grids while Square loads
-    const loadingHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px 0;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">Loading catalog...</div>`;
-    const ids = ['feat-grid','shop-grid','cat-grid'];
-    ids.forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML = loadingHTML; });
-  }
   renderFAQ();
   renderMarquee();
   renderStrip();
   initAnimations();
-  // Fetch Square catalog — re-renders everything on success
-  fetchSquareCatalog().then(() => {
-    if (PRODUCTS.length) {
-      renderFeatured();
-      renderCategories();
-      renderShop();
-      renderLookbook();
-    } else if (!CONFIG.useMockData) {
-      const ids = ['feat-grid','shop-grid'];
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:80px 0;font-size:13px;color:var(--muted)">No products found. Add prices to your items in Square dashboard.</div>`;
-      });
-    }
-  });
+
   if (CONFIG.useMockData) {
+    // Dev mode — render mock data immediately
     renderFeatured();
     renderCategories();
     renderShop();
     renderLookbook();
+  } else {
+    // Production — fetchSquareCatalog checks localStorage first (instant),
+    // then fetches fresh data from worker in background
+    fetchSquareCatalog();
   }
 });
 </script>
